@@ -1,0 +1,19 @@
+{
+  "name": "myrxjs",
+  "version": "1.0.0",
+  "description": "rxjs practice",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --watch --inline",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.1.3",
+    "rxjs": "^5.4.0",
+    "typescript": "^2.3.2",
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5"
+  }
+}
