@@ -1,13 +1,4 @@
-// reduce import libraries
 import { Observable } from 'rxjs';
-
-let circle: any;
-let button: any;
-let output: any;
-output = document.getElementById('output');
-circle = document.getElementsByClassName('circle')[0];
-button = document.getElementById('button');
-let click = Observable.fromEvent(button, 'click');
 
 function retryStrategy() {
   return (erros) => {
