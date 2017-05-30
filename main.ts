@@ -1,29 +1,16 @@
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 
-function retryStrategy() {
-  return (erros) => {
-    return erros.scan((acc, value) => {
-      console.log(acc, value);
-      acc+=1;
-      if (acc < 4) {
-        return acc;
-      } else {
-        throw new Error(value);
-      }
-    }, 0).delay(1000);
-  };
-}
+let numbers = [1, 2, 3, 4, 5, 6, 7];
+let source = Observable.create((observer) => {
+  console.log(observer);
+  for(let n of numbers) {
+    observer.next(n);
+  }
+  observer.complete();
+}).map(input => input *2).take(5).filter(input => input > 4);
 
-function loadWithFetchUrl(url: string) {
-  return Observable.defer(() => {
-    return Observable.fromPromise(
-      fetch(url).then(r => {
-        if (r.status === 200) {
-          return r.json();
-        } else {
-          return Promise.reject(r);
-        }
-      })
-    )}).retryWhen(retryStrategy());
-}
-loadWithFetchUrl("mosvies.json").subscribe(r => console.log(r),e => console.log(`Error : ${e}`), ()=>{ console.log('complete');});
+source.subscribe(
+  value => console.log(`value : ${value}`),
+  error => console.log(`error: ${error}`),
+  () => console.log('complete')
+);

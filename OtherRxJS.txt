@@ -19,6 +19,20 @@ source.subscribe(new MyObserver());
 
 // class MyObserver implements Observer<number>
 
+// ++++++++++++++++++++++es6 standard+++++++++++++++++++++++++
+import { Observable, Observer } from 'rxjs';
+
+
+let numbers = [1, 2, 3];
+
+let source = Observable.from(numbers);
+
+source.subscribe(
+  value => console.log(`value : ${value}`),
+  error => console.log(`error: ${error}`),
+  () => console.log('complete')
+);
+
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -144,6 +158,7 @@ loadWithFetchUrl("movies.json").subscribe(r => console.log(r),e => console.log(`
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
 import { Observable } from 'rxjs';
 
 function retryStrategy() {
@@ -173,5 +188,3 @@ function loadWithFetchUrl(url: string) {
     )}).retryWhen(retryStrategy());
 }
 loadWithFetchUrl("mosvies.json").subscribe(r => console.log(r),e => console.log(`Error : ${e}`), ()=>{ console.log('complete');});
-
-
