@@ -1,16 +1,41 @@
 import { Observable, Observer } from 'rxjs';
+let circle: any;
+let button: any;
+let output: any;
+output = document.getElementById('output');
+circle = document.getElementsByClassName('circle')[0];
+button = document.getElementById('button');
+let click = Observable.fromEvent(button, 'click');
 
-let numbers = [1, 2, 3, 4, 5, 6, 7];
-let source = Observable.create((observer) => {
-  console.log(observer);
-  for(let n of numbers) {
-    observer.next(n);
-  }
-  observer.complete();
-}).map(input => input *2).take(5).filter(input => input > 4);
+function loadData(url: string){
+  return Observable.create(observer => {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.addEventListener("load", ()=>{
+      if (xhr.status === 200) {
+        let data = JSON.parse(xhr.responseText);
+        observer.next(data);
+        observer.complete();
+      } else {
+        observer.error(xhr);
+      }
+    });
+    xhr.send();
+  }).retryWhen((errors) => {
+    return errors.delay(1000).take(4);
+  });
+}
 
-source.subscribe(
-  value => console.log(`value : ${value}`),
-  error => console.log(`error: ${error}`),
-  () => console.log('complete')
-);
+
+function renderMovie(movies) {
+  movies.forEach(m => {
+    let div = document.createElement("div");
+    div.innerText = m.title;
+    output.appendChild(div);
+  });
+}
+
+// click.map(e => loadData("movies.json")).subscribe(o => console.log(o));
+
+
+click.flatMap(e => loadData("mosvies.json")).subscribe(o => renderMovie(o), error => console.log(`error: ${error}`));

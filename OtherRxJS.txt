@@ -136,55 +136,19 @@ function renderMovie(movies) {
 
 
 click.flatMap(e => loadData("movies.json")).subscribe(o => console.log(o));
-// lazy loading
-// loadData("movies.json").subscribe(renderMovie);
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-// fetch
-
-import { Observable } from 'rxjs';
-
-function loadWithFetchUrl(url: string) {
-  return Observable.defer(() => {
-    return Observable.fromPromise(
-      fetch(url).then(r => {
-        if (r.status === 200) {
-          return r.json();
-        }
-      })
-    )});
-}
-loadWithFetchUrl("movies.json").subscribe(r => console.log(r),e => console.log(`Error : ${e}`), ()=>{ console.log('complete');});
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-import { Observable } from 'rxjs';
+// retry strategy
 
-function retryStrategy() {
-  return (erros) => {
-    return erros.scan((acc, value) => {
-      console.log(acc, value);
-      acc+=1;
-      if (acc < 4) {
-        return acc;
+// Observable.create().retry(3)
+if (xhr.status === 200) {
+        let data = JSON.parse(xhr.responseText);
+        observer.next(data);
+        observer.complete();
       } else {
-        throw new Error(value);
+        observer.error(xhr);
       }
-    }, 0).delay(1000);
-  };
-}
-
-function loadWithFetchUrl(url: string) {
-  return Observable.defer(() => {
-    return Observable.fromPromise(
-      fetch(url).then(r => {
-        if (r.status === 200) {
-          return r.json();
-        } else {
-          return Promise.reject(r);
-        }
-      })
-    )}).retryWhen(retryStrategy());
-}
-loadWithFetchUrl("mosvies.json").subscribe(r => console.log(r),e => console.log(`Error : ${e}`), ()=>{ console.log('complete');});
+// Observable.create().retryWhen((errors) => {
+    return errors.delay(1000).take(4);
+  });
+//+++++++++++++++++++++++++++++++++++++++++++++++
